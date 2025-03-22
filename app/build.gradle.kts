@@ -56,4 +56,10 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    // JTDS SQL Server driver
+    implementation (libs.jtds)
+
+    // Dotenv
+    implementation (libs.java.dotenv)
 }

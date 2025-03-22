@@ -1,8 +1,11 @@
+import com.example.airport.R
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 
@@ -23,6 +26,15 @@ fun LoginScreen(
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Logo
+        Spacer(modifier = Modifier.height(64.dp))
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "Logo",
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(32.dp))
+
         // Username input field
         TextField(
             value = username,
@@ -31,6 +43,7 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         // Password input field with password masking
         TextField(
             value = password,
@@ -40,24 +53,28 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
+
         // Row for remember me checkbox and label
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Checkbox(
                 checked = rememberMe,
-                onCheckedChange = onRememberMeChange
+                onCheckedChange = onRememberMeChange,
             )
             Text("Remember Password")
         }
         Spacer(modifier = Modifier.height(16.dp))
+
         // Login button
         Button(
             onClick = onLoginClick,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Login")
+            Text("LOGIN")
         }
+
         // Display error message if any
         error?.let {
             Spacer(modifier = Modifier.height(8.dp))
