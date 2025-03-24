@@ -1,3 +1,5 @@
+package com.example.airport.ui.screens
+
 import com.example.airport.R
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
@@ -8,18 +10,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.airport.ui.viewmodels.LoginViewModel
 
 @Composable
-fun LoginScreen(
-    username: String,
-    onUsernameChange: (String) -> Unit,
-    password: String,
-    onPasswordChange: (String) -> Unit,
-    rememberMe: Boolean,
-    onRememberMeChange: (Boolean) -> Unit,
-    onLoginClick: () -> Unit,
-    error: String?
-) {
+fun LoginScreen(viewModel: LoginViewModel) {
     // Main column to center all elements
     Column(
         modifier = Modifier.padding(16.dp),
@@ -35,19 +29,20 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(32.dp))
 
-        // Username input field
-        TextField(
-            value = username,
-            onValueChange = onUsernameChange,
+        // Email input field
+        OutlinedTextField(
+            value = viewModel.email,
+            onValueChange = { viewModel.email = it },
             label = { Text("Username") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         // Password input field with password masking
-        TextField(
-            value = password,
-            onValueChange = onPasswordChange,
+        OutlinedTextField(
+            value = viewModel.password,
+            onValueChange = { viewModel.password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -60,8 +55,8 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Checkbox(
-                checked = rememberMe,
-                onCheckedChange = onRememberMeChange,
+                checked = viewModel.savePassword,
+                onCheckedChange = { viewModel.savePassword = it },
             )
             Text("Remember Password")
         }
@@ -69,14 +64,14 @@ fun LoginScreen(
 
         // Login button
         Button(
-            onClick = onLoginClick,
+            onClick = { viewModel.login() },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOGIN")
         }
 
         // Display error message if any
-        error?.let {
+        viewModel.error?.let {
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = it,
