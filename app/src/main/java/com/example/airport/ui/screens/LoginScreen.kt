@@ -83,20 +83,24 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Login button
+        val loginResult by viewModel.loginResult.collectAsState()
         Button(
             onClick = {
                 viewModel.login(email, password, rememberMe)
-                if (viewModel.loginResult.value is LoginResult.Success) {
-                    onLoginSuccess()
-                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOGIN")
         }
 
+        // React to changes in loginResult
+        LaunchedEffect(loginResult) {
+            if (loginResult is LoginResult.Success) {
+                onLoginSuccess()
+            }
+        }
+
         // Display error message if any
-        val loginResult by viewModel.loginResult.collectAsState()
         when (loginResult) {
             is LoginResult.Failure -> {
                 Spacer(modifier = Modifier.height(8.dp))

@@ -43,6 +43,7 @@ fun NavigationScreen(
         }
         Button(onClick = {
             // Xóa thông tin đăng nhập
+            preferenceHelper.clearCredentials()
             onNavigate("logout")
         }) {
             Text("Đăng xuất")

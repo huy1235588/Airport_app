@@ -23,26 +23,29 @@ class LoginViewModel(
             val savedPassword = getSavedPassword()
             if (savedEmail != null && savedPassword != null) {
                 login(savedEmail, savedPassword, true)
-                _loginResult.value = LoginResult.Success
             }
         }
     }
 
     fun login(email: String, password: String, remember: Boolean) {
         viewModelScope.launch {
-//            _loginResult.value = LoginResult.Loading
-            val user = withContext(Dispatchers.IO) {
-                authRepository.login(email, password)
-            }
-            if (user != null) {
-                if (remember) {
-                    saveCredentials(email, password)
-                } else {
-                    clearCredentials()
+            _loginResult.value = LoginResult.Loading
+            try {
+                val user = withContext(Dispatchers.IO) {
+                    authRepository.login(email, password)
                 }
-                _loginResult.value = LoginResult.Success
-            } else {
-                _loginResult.value = LoginResult.Failure("Invalid email or password")
+                if (user != null) {
+                    if (remember) {
+                        saveCredentials(email, password)
+                    } else {
+                        clearCredentials()
+                    }
+                    _loginResult.value = LoginResult.Success
+                } else {
+                    _loginResult.value = LoginResult.Failure("Invalid email or password")
+                }
+            } catch (e: Exception) {
+                _loginResult.value = LoginResult.Failure(e.message ?: "Unknown error")
             }
         }
     }
