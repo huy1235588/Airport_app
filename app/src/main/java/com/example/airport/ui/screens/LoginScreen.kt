@@ -10,10 +10,30 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+import com.example.airport.data.repository.AuthRepository
+import com.example.airport.ui.viewmodels.LoginResult
 import com.example.airport.ui.viewmodels.LoginViewModel
+import com.example.airport.utils.PreferenceHelper
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel) {
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    authRepository: AuthRepository,
+    preferenceHelper: PreferenceHelper
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var rememberMe by remember { mutableStateOf(false) }
+    val viewModel: LoginViewModel = remember { LoginViewModel(authRepository, preferenceHelper) }
+
+    // Kiểm tra tự động đăng nhập khi khởi động
+    LaunchedEffect(Unit) {
+        viewModel.autoLogin()
+        if (viewModel.loginResult.value is LoginResult.Success) {
+            onLoginSuccess()
+        }
+    }
+
     // Main column to center all elements
     Column(
         modifier = Modifier.padding(16.dp),
@@ -31,18 +51,18 @@ fun LoginScreen(viewModel: LoginViewModel) {
 
         // Email input field
         OutlinedTextField(
-            value = viewModel.email,
-            onValueChange = { viewModel.email = it },
+            value = email,
+            onValueChange = { email = it },
             label = { Text("Username") },
             modifier = Modifier.fillMaxWidth(),
 
-        )
+            )
         Spacer(modifier = Modifier.height(8.dp))
 
         // Password input field with password masking
         OutlinedTextField(
-            value = viewModel.password,
-            onValueChange = { viewModel.password = it },
+            value = password,
+            onValueChange = { password = it },
             label = { Text("Password") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
@@ -55,8 +75,8 @@ fun LoginScreen(viewModel: LoginViewModel) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Checkbox(
-                checked = viewModel.savePassword,
-                onCheckedChange = { viewModel.savePassword = it },
+                checked = rememberMe,
+                onCheckedChange = { rememberMe = it },
             )
             Text("Remember Password")
         }
@@ -64,20 +84,30 @@ fun LoginScreen(viewModel: LoginViewModel) {
 
         // Login button
         Button(
-            onClick = { viewModel.login() },
+            onClick = {
+                viewModel.login(email, password, rememberMe)
+                if (viewModel.loginResult.value is LoginResult.Success) {
+                    onLoginSuccess()
+                }
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("LOGIN")
         }
 
         // Display error message if any
-        viewModel.error?.let {
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall
-            )
+        val loginResult by viewModel.loginResult.collectAsState()
+        when (loginResult) {
+            is LoginResult.Failure -> {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = (loginResult as LoginResult.Failure).error,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
+
+            else -> {} // Do nothing for Success or Initial state
         }
     }
 }

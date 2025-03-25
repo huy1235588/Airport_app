@@ -1,4 +1,4 @@
-package com.example.airport.data.repositories
+package com.example.airport.data.repository
 
 import com.example.airport.data.db.DatabaseHelper
 import com.example.airport.data.models.User
@@ -16,6 +16,26 @@ class AuthRepository(private val dbHelper: DatabaseHelper) {
         // Thực thi truy vấn để lấy thông tin user
         val query = "SELECT * FROM Users WHERE email = ? AND password = ?"
         val params = arrayOf(email, password)
+        val result = dbHelper.executeQueryWithParameters(query, params)
+
+        // Nếu có kết quả trả về thì lấy thông tin user từ ResultSet
+        return if (result?.next() == true) {
+            getUserFromResult(result)
+        } else {
+            null
+        }
+    }
+
+    // Lấy thông tin user theo email
+    fun getUserByEmail(email: String): User? {
+        // Kết nối đến cơ sở dữ liệu
+        if (!dbHelper.connect()) {
+            return null
+        }
+
+        // Thực thi truy vấn để lấy thông tin user
+        val query = "SELECT * FROM Users WHERE email = ?"
+        val params = arrayOf(email)
         val result = dbHelper.executeQueryWithParameters(query, params)
 
         // Nếu có kết quả trả về thì lấy thông tin user từ ResultSet

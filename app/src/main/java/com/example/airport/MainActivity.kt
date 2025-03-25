@@ -7,15 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import com.example.airport.ui.theme.AirportTheme
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.airport.data.db.DatabaseHelper
-import com.example.airport.data.repositories.AuthRepository
-import com.example.airport.ui.screens.LoginScreen
-import com.example.airport.ui.viewmodels.LoginViewModel
+import com.example.airport.data.repository.AuthRepository
+import com.example.airport.utils.PreferenceHelper
 
 class MainActivity : ComponentActivity() {
 
@@ -29,25 +25,15 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    AppNavigation()
+                    val context = this
+                    val navController = rememberNavController()
+                    val databaseHelper = DatabaseHelper()
+                    val authRepository = AuthRepository(databaseHelper)
+                    val preferenceHelper = PreferenceHelper(context)
+                    NavigationGraph(navController, authRepository, preferenceHelper)
                 }
             }
         }
 
-    }
-}
-
-
-@Composable
-fun AppNavigation() {
-    val navController = rememberNavController()
-
-    // Model
-    val loginViewModel = LoginViewModel(AuthRepository(DatabaseHelper()))
-
-    NavHost(navController = navController, startDestination = "login") {
-        composable("login") {
-            LoginScreen(loginViewModel)
-        }
     }
 }
