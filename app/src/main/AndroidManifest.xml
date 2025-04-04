@@ -25,7 +25,9 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".views.LoginActivity" />
+        <activity
+            android:name=".views.LoginActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".views.MainActivity" />
         <activity android:name=".views.FlightListActivity" />
         <activity android:name=".views.PassengerListActivity" />
