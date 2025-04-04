@@ -1,6 +1,7 @@
 package com.huy.airport_app_java.views;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,17 +17,17 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.huy.airport_app_java.R;
+import com.huy.airport_app_java.databinding.ActivityMainBinding;
+import com.huy.airport_app_java.utils.SharedPreferencesManager;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
-    // Các thành phần UI
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private Toolbar toolbar;
+    private ActivityMainBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         // Khởi tạo và cấu hình các thành phần UI
         initViews();
@@ -38,12 +39,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Khởi tạo các view
      */
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+        setSupportActionBar(binding.toolbar);
+        binding.navView.setNavigationItemSelectedListener(this);
     }
 
     /**
@@ -51,10 +48,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      */
     private void setupDrawerLayout() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawerLayout, toolbar,
+                this, binding.drawerLayout, binding.toolbar,
                 R.string.navigation_drawer_open,
                 R.string.navigation_drawer_close);
-        drawerLayout.addDrawerListener(toggle);
+        binding.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
     }
 
@@ -62,18 +59,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * Thiết lập thông tin người dùng trong header của navigation drawer
      */
     private void setupUserInfo() {
-        View headerView = navigationView.getHeaderView(0);
-        ImageView ivAvatar = headerView.findViewById(R.id.ivAvatar);
+        View headerView = binding.navView.getHeaderView(0);
         TextView tvName = headerView.findViewById(R.id.tvName);
         TextView tvEmail = headerView.findViewById(R.id.tvEmail);
 
-        // Lấy thông tin người dùng từ intent
+        // Lấy thông tin người dùng từ intent hoặc SharedPreferences
         String name = getIntent().getStringExtra("userName");
         String email = getIntent().getStringExtra("userEmail");
 
+        // Nếu không có trong intent, lấy từ SharedPreferences
+        if (name == null || email == null) {
+            SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this);
+            name = sharedPreferencesManager.getUserName();
+            email = sharedPreferencesManager.getUserEmail();
+        }
+
         // Hiển thị thông tin người dùng nếu có
-        if (name != null) tvName.setText(name);
-        if (email != null) tvEmail.setText(email);
+        if (name != null && !name.isEmpty()) tvName.setText(name);
+        if (email != null && !email.isEmpty()) tvEmail.setText(email);
     }
 
     @Override
@@ -100,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
 
         // Đóng drawer
-        drawerLayout.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -124,10 +127,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     public void onBackPressed() {
         // Xử lý nút back
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

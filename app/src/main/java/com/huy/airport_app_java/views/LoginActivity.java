@@ -45,8 +45,10 @@ public class LoginActivity extends AppCompatActivity {
                     // Lưu thông tin đăng nhập nếu checkbox "Ghi nhớ" được chọn
                     if (binding.cbRemember.isChecked()) {
                         sharedPreferencesManager.saveLoginCredentials(user.email, user.password);
+                        sharedPreferencesManager.saveUserInfo(user.firstName + " " + user.lastName, user.email);
                     } else {
                         sharedPreferencesManager.clearLoginCredentials();
+                        sharedPreferencesManager.clearUserInfo();
                     }
                     
                     // Chuyển đến MainActivity
@@ -78,5 +80,11 @@ public class LoginActivity extends AppCompatActivity {
                 loginViewModel.login(username, password);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 }

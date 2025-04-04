@@ -7,16 +7,18 @@ import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.huy.airport_app_java.R;
+import com.huy.airport_app_java.databinding.ActivityLauncherBinding;
 import com.huy.airport_app_java.utils.SharedPreferencesManager;
 
 public class LauncherActivity extends AppCompatActivity {
     private static final long SPLASH_DELAY = 2000; // 2 seconds delay
+    private ActivityLauncherBinding binding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        binding = ActivityLauncherBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         
         // Khởi tạo SharedPreferencesManager để quản lý thông tin đăng nhập
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this);
@@ -37,5 +39,11 @@ public class LauncherActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }, SPLASH_DELAY);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        binding = null;
     }
 } 

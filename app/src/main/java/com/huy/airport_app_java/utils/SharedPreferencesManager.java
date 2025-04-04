@@ -42,4 +42,26 @@ public class SharedPreferencesManager {
     public boolean hasSavedCredentials() {
         return !getSavedEmail().isEmpty();
     }
+
+    public void saveUserInfo(String name, String email) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userName", name);
+        editor.putString("userEmail", email);
+        editor.apply();
+    }
+
+    public String getUserName() {
+        return sharedPreferences.getString("userName", "");
+    }
+
+    public String getUserEmail() {
+        return sharedPreferences.getString("userEmail", "");
+    }
+
+    public void clearUserInfo() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove("userName");
+        editor.remove("userEmail");
+        editor.apply();
+    }
 } 
