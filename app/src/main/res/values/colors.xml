@@ -5,4 +5,7 @@
     
     <color name="gray">#d9d9d9</color>
     <color name="holo_red_dark">#FFCC0000</color>
+    <color name="red_bkc">#ea232a</color>
+
+    <color name="blue">#FF0000FF</color>
 </resources>

@@ -6,13 +6,11 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.huy.airport_app_java.R;
 import com.huy.airport_app_java.databinding.ActivityLoginBinding;
 import com.huy.airport_app_java.models.User;
 import com.huy.airport_app_java.utils.SharedPreferencesManager;
