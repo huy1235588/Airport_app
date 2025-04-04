@@ -2,10 +2,6 @@ package com.huy.airport_app_java.views;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,15 +15,8 @@ import com.huy.airport_app_java.viewmodels.LoginViewModel;
 
 public class LoginActivity extends AppCompatActivity {
     private ActivityLoginBinding binding;
-
-    // Các view trong layout
-    private EditText etUsername, etPassword;  // Ô nhập tên đăng nhập và mật khẩu
-    private CheckBox cbRemember;  // Checkbox ghi nhớ đăng nhập
-    private Button btnLogin;  // Nút đăng nhập
-
-    // ViewModel và SharedPreferences
-    private LoginViewModel loginViewModel;  // ViewModel xử lý logic đăng nhập
-    private SharedPreferencesManager sharedPreferencesManager;  // Quản lý thông tin đăng nhập
+    private LoginViewModel loginViewModel;
+    private SharedPreferencesManager sharedPreferencesManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,20 +24,21 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Khởi tạo SharedPreferencesManager
+        // Khởi tạo SharedPreferencesManager để quản lý thông tin đăng nhập
         sharedPreferencesManager = new SharedPreferencesManager(this);
 
         // Tải thông tin đăng nhập đã lưu nếu có
-        binding.etUsername.setText(sharedPreferencesManager.getSavedEmail());
-        binding.etPassword.setText(sharedPreferencesManager.getSavedPassword());
-        binding.cbRemember.setChecked(sharedPreferencesManager.hasSavedCredentials());
+        if (sharedPreferencesManager.hasSavedCredentials()) {
+            binding.etUsername.setText(sharedPreferencesManager.getSavedEmail());
+            binding.etPassword.setText(sharedPreferencesManager.getSavedPassword());
+            binding.cbRemember.setChecked(true);
+        }
 
-        // Khởi tạo và quan sát ViewModel
+        // Khởi tạo và theo dõi ViewModel
         loginViewModel = new ViewModelProvider(this).get(LoginViewModel.class);
         loginViewModel.userLiveData.observe(this, new Observer<User>() {
             @Override
             public void onChanged(User user) {
-                // Đặt lại trạng thái của nút đăng nhập
                 binding.btnLogin.setEnabled(true);
 
                 if (user != null) {
@@ -58,7 +48,8 @@ public class LoginActivity extends AppCompatActivity {
                     } else {
                         sharedPreferencesManager.clearLoginCredentials();
                     }
-                    // Chuyển đến MainActivity (Dashboard)
+                    
+                    // Chuyển đến MainActivity
                     Intent intent = new Intent(LoginActivity.this, MainActivity.class);
                     intent.putExtra("userName", user.firstName + " " + user.lastName);
                     intent.putExtra("userEmail", user.email);
@@ -73,14 +64,11 @@ public class LoginActivity extends AppCompatActivity {
 
         // Xử lý sự kiện click nút đăng nhập
         binding.btnLogin.setOnClickListener(v -> {
-            // Kiểm tra và ngăn chặn click quá nhanh
             if (!binding.btnLogin.isEnabled()) return;
 
-            // Lấy thông tin từ các ô nhập
             String username = binding.etUsername.getText().toString().trim();
             String password = binding.etPassword.getText().toString().trim();
 
-            // Kiểm tra xem các ô nhập có rỗng không
             if (username.isEmpty() || password.isEmpty()) {
                 binding.tvError.setText("Please enter username and password");
                 binding.tvError.setVisibility(TextView.VISIBLE);

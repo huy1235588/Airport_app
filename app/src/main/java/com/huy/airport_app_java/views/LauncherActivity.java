@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.huy.airport_app_java.R;
 import com.huy.airport_app_java.utils.SharedPreferencesManager;
 
-public class SplashActivity extends AppCompatActivity {
+public class LauncherActivity extends AppCompatActivity {
     private static final long SPLASH_DELAY = 2000; // 2 seconds delay
 
     @Override
@@ -18,20 +18,20 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         
-        // Initialize SharedPreferencesManager
+        // Khởi tạo SharedPreferencesManager để quản lý thông tin đăng nhập
         SharedPreferencesManager sharedPreferencesManager = new SharedPreferencesManager(this);
         
-        // Use Handler to delay navigation
+        // Delay chuyển đổi giữa các Activity
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             Intent intent;
             
-            // Check if there are saved login credentials
+            // Kiểm tra xem có thông tin đăng nhập đã lưu hay không
             if (sharedPreferencesManager.hasSavedCredentials()) {
-                // If credentials exist, go directly to MainActivity
-                intent = new Intent(SplashActivity.this, MainActivity.class);
+                // Nếu có thông tin đăng nhập đã lưu, chuyển đến MainActivity
+                intent = new Intent(LauncherActivity.this, MainActivity.class);
             } else {
-                // If no saved credentials, go to LoginActivity
-                intent = new Intent(SplashActivity.this, LoginActivity.class);
+                // Nếu không có thông tin đăng nhập đã lưu, chuyển đến LoginActivity
+                intent = new Intent(LauncherActivity.this, LoginActivity.class);
             }
             
             startActivity(intent);
