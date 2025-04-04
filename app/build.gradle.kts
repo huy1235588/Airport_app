@@ -1,15 +1,13 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.compose)
 }
 
 android {
-    namespace = "com.example.airport"
+    namespace = "com.huy.airport_app_java"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.airport"
+        applicationId = "com.huy.airport_app_java"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -31,41 +29,41 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
     buildFeatures {
-        compose = true
+        viewBinding = true
     }
 }
 
 dependencies {
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.lifecycle.runtime.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.fragment)
+    implementation(libs.appcompat)
+    implementation(libs.material)
+    implementation(libs.activity)
+    implementation(libs.constraintlayout)
     testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
-    debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)
+    androidTestImplementation(libs.ext.junit)
+    androidTestImplementation(libs.espresso.core)
 
-    // JTDS SQL Server driver
-    implementation (libs.jtds)
+    // Lifecycle components (ViewModel, LiveData)
+    implementation (libs.lifecycle.viewmodel)
+    implementation (libs.lifecycle.livedata)
+    implementation (libs.androidx.lifecycle.common.java8)
 
-    // Dotenv
-    implementation (libs.java.dotenv)
+    // Room components
+    implementation (libs.androidx.room.runtime)
+    annotationProcessor (libs.androidx.room.compiler)
 
-    implementation (libs.androidx.activity.compose.v180)
-    implementation (libs.material3)
-    implementation (libs.androidx.navigation.compose.v270)
-    implementation (libs.kotlinx.coroutines.android)
+    // Navigation Component
+    implementation (libs.androidx.navigation.fragment)
+    implementation (libs.androidx.navigation.ui)
+
+    // RecyclerView
+    implementation (libs.androidx.recyclerview)
+
+    // Charting Library (MPAndroidChart)
+//    implementation ("com.github.PhilJay:MPAndroidChart:v3.1.0")
+
+    // SQL Server JDBC Driver
+    implementation(libs.jtds)
+
 }

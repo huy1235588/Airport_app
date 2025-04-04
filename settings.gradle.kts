@@ -19,6 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Airport"
+rootProject.name = "Airport_app_java"
 include(":app")
- 
