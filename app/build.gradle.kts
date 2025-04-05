@@ -24,7 +24,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "URL", "\"${localProperties["URL"]}\"")
+        buildConfigField("String", "URL_SQLSERVER", "\"${localProperties["URL_SQLSERVER"]}\"")
     }
 
     buildTypes {

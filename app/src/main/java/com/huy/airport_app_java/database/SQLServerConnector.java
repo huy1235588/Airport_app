@@ -1,19 +1,24 @@
 package com.huy.airport_app_java.database;
 
+import android.util.Log;
+
 import com.huy.airport_app_java.BuildConfig;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class SQLServerConnector {
     // Cấu hình kết nối (cập nhật theo server của bạn)
-    private static final String URL = BuildConfig.URL;
+    private static final String URL = BuildConfig.URL_SQLSERVER;
+
     private static final String USER = "sa";
     private static final String PASSWORD = "sa";
     private static Connection connection;
 
     // Phương thức để lấy kết nối
     public static synchronized Connection getConnection() throws SQLException {
+        Log.d("TAG", "URL: " + URL);
         if (connection == null || connection.isClosed()) {
             try {
                 // Nạp driver JDBC cho SQL Server (với jTDS)
